@@ -60,7 +60,7 @@ https://github.com/thephpleague/csv is used to manipulate the data.
 
 ### Design patterns and OOP principles
 
-Several design patterns and principles was considering and implemented.
+Several design patterns and principles was considered and implemented.
 
 #### SOLID and GRASP Principles
 
@@ -98,7 +98,7 @@ Each <code>HandlerInterface</code> implementor and each <code>OperationBuilder</
 
 <code>Strategy</code> is used to implement and choose the right <code>HandlerInterface</code>
 
-<code>Builder</code> was chosen to implement <code>Operation</code> creation as it gives for flexibility as opposed to <code>Factor</code> pattern.
+<code>Builder</code> was chosen to implement <code>Operation</code> creation as it gives more flexibility as opposed to <code>Factor</code> pattern.
 
 ---
 
