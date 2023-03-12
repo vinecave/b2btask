@@ -6,6 +6,7 @@ use League\Csv\CannotInsertRecord;
 use League\Csv\Exception;
 use League\Csv\Reader;
 use Iterator;
+use League\Csv\SyntaxError;
 use League\Csv\Writer;
 
 class Storage
@@ -20,13 +21,20 @@ class Storage
     public function __construct(
         string $filename
     ) {
-        $this->reader = Reader::createFromPath($filename)->setHeaderOffset(0);
-        $this->writer = Writer::createFromPath($filename);
+        $this->reader = Reader::createFromPath($filename, 'r')->setHeaderOffset(0);
+        $this->writer = Writer::createFromPath($filename, 'a+');
     }
 
-    public function readRows(): Iterator
+    /**
+     * @return Iterator|array
+     */
+    public function readRows(): Iterator|array
     {
-        return $this->reader->getRecords();
+        try {
+            return $this->reader->getRecords();
+        } catch (Exception $exception) {
+            return [];
+        }
     }
 
     /**
@@ -34,12 +42,19 @@ class Storage
      */
     public function insertRow(array $row): void
     {
-        if (empty($this->reader->getHeader())) {
+        $h = '';
+
+        try {
+            $h = $this->reader->getHeader();
+//            print_r($h); die();
+        } catch (SyntaxError $syntaxError) {
             $this->writer->insertOne(
                 array_keys($row)
             );
         }
+//        print_r($h); die();
 
-        $this->writer->insertOne($row);
+
+        $this->writer->insertOne(array_values($row));
     }
 }

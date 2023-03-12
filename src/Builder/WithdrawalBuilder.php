@@ -2,11 +2,17 @@
 
 namespace Vinecave\B2BTask\Builder;
 
+use Vinecave\B2BTask\Exception\OperationAccountAmountNotSufficient;
+use Vinecave\B2BTask\Exception\OperationNotInitialized;
+use Vinecave\B2BTask\Model\Account;
 use Vinecave\B2BTask\Model\Deposit;
 use Vinecave\B2BTask\Model\Withdrawal;
 
 class WithdrawalBuilder extends OperationBuilder
 {
+    /**
+     * @throws OperationNotInitialized
+     */
     public function initTransactions(): OperationBuilder
     {
         $operation = $this->getOperation();
@@ -24,8 +30,20 @@ class WithdrawalBuilder extends OperationBuilder
     }
 
 
-    public function begin(string $accountId, int $amount): OperationBuilder
+    /**
+     * @throws OperationAccountAmountNotSufficient
+     */
+    public function begin(Account $account, int $amount): OperationBuilder
     {
+        $accountAmount = $account->getAmount();
+        $accountId = $account->getId();
+
+        if ($account->getAmount() < $amount) {
+            throw new OperationAccountAmountNotSufficient(
+                "Account $accountId has $accountAmount is lesser then $amount"
+            );
+        }
+
         $this->setOperation(
             new Withdrawal($accountId, $amount)
         );
@@ -38,6 +56,9 @@ class WithdrawalBuilder extends OperationBuilder
         return 'withdrawal';
     }
 
+    /**
+     * @throws OperationNotInitialized
+     */
     protected function buildComment(): string
     {
         $operation = $this->getOperation();

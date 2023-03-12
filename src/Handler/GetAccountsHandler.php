@@ -2,34 +2,23 @@
 
 namespace Vinecave\B2BTask\Handler;
 
-use Vinecave\B2BTask\Factory\AccountFactory;
-use Vinecave\B2BTask\Repository\TransactionRepository;
+use Vinecave\B2BTask\Exception\NoTransactionsFound;
+use Vinecave\B2BTask\Service\AccountService;
 
 class GetAccountsHandler implements HandlerInterface
 {
     public function __construct(
-        private readonly TransactionRepository $transactionRepository,
-        private readonly AccountFactory $accountFactory
+        private readonly AccountService $accountService
     ) {
     }
 
 
+    /**
+     * @throws NoTransactionsFound
+     */
     public function handle(array $arguments): array
     {
-        $result = [];
-
-        $transactions = $this->transactionRepository->findAllTransactions();
-
-        foreach ($transactions as $transaction) {
-            $account = $result[$transaction->getAccountId()] ?? null;
-
-            if ($account === null) {
-                $account = $this->accountFactory->createAccount($transaction->getAccountId());
-                $result[$account->getId()] = $account;
-            }
-        }
-
-        return $result;
+        return $this->accountService->findAllAccounts();
     }
 
     public static function getName(): string

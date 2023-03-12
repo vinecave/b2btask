@@ -19,7 +19,7 @@ class Account
 
     public function addAmount(int $amount): void
     {
-        $this->amount = $amount;
+        $this->amount += $amount;
     }
 
     public function getAmount(): int

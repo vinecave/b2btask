@@ -2,17 +2,25 @@
 
 namespace Vinecave\B2BTask\Builder;
 
+use Vinecave\B2BTask\Exception\OperationAccountAmountNotSufficient;
+use Vinecave\B2BTask\Exception\OperationEmptyTransferAccount;
+use Vinecave\B2BTask\Exception\OperationTargetAccountNotSet;
+use Vinecave\B2BTask\Model\Account;
 use Vinecave\B2BTask\Model\Transfer;
 use Exception;
 
 class TransferBuilder extends OperationBuilder
 {
+    /**
+     * @throws OperationTargetAccountNotSet
+     * @throws Exception
+     */
     public function initTransactions(): OperationBuilder
     {
         $operation = $this->getOperation();
 
         if ($operation->getTargetAccountId() == null) {
-            throw new Exception('Target account is not set');
+            throw new OperationTargetAccountNotSet('Target account is not set');
         }
 
         $operation->addTransaction(
@@ -38,9 +46,21 @@ class TransferBuilder extends OperationBuilder
     }
 
 
-    public function begin(string $accountId, int $amount): OperationBuilder
+    /**
+     * @throws OperationAccountAmountNotSufficient
+     */
+    public function begin(Account $account, int $amount): OperationBuilder
     {
-        $this->setOperation(new Transfer($accountId, $amount));
+        $accountAmount = $account->getAmount();
+        $accountId = $account->getId();
+
+        if ($account->getAmount() < $amount) {
+            throw new OperationAccountAmountNotSufficient(
+                "Account $accountId has $accountAmount is lesser then $amount"
+            );
+        }
+
+        $this->setOperation(new Transfer($account->getId(), $amount));
 
         return $this;
     }
@@ -50,10 +70,10 @@ class TransferBuilder extends OperationBuilder
      */
     public function setOptions(array $options): self
     {
-        $targetAccountId = $options['target_account_id'] ?? null;
+        $targetAccountId = $options['target_accountId'] ?? null;
 
         if ($targetAccountId == null) {
-            throw new Exception('Empty target account id');
+            throw new OperationEmptyTransferAccount('Empty target account id');
         }
 
         $this->getOperation()->setTargetAccountId($targetAccountId);
@@ -77,6 +97,9 @@ class TransferBuilder extends OperationBuilder
         return 'transfer';
     }
 
+    /**
+     * @throws Exception
+     */
     protected function buildComment(): string
     {
         $operation = $this->getOperation();

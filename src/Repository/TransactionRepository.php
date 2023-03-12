@@ -4,6 +4,7 @@ namespace Vinecave\B2BTask\Repository;
 
 use League\Csv\CannotInsertRecord;
 use League\Csv\Exception;
+use Vinecave\B2BTask\Exception\TransactionFieldIsNotFound;
 use Vinecave\B2BTask\Factory\TransactionFactory;
 use Vinecave\B2BTask\Model\Transaction;
 use Vinecave\B2BTask\Storage\Storage;
@@ -19,31 +20,42 @@ class TransactionRepository
     /**
      * @param string $accountId
      * @param string $sortBy
-     * @param string $sortOrder
+     * @param int $sortOrder
      * @return Transaction[]
-     * @throws Exception
+     * @throws TransactionFieldIsNotFound
      */
-    public function findTransactions(string $accountId, string $sortBy = 'amount', string $sortOrder = 'ASC'): array
+    public function findTransactions(string $accountId, string $sortBy = 'amount', int $sortOrder = SORT_ASC): array
     {
         $rows = $this->storage->readRows();
         $result = [];
         $sorting = [];
+        $sortType = null;
 
         foreach ($rows as $row) {
-            if ($row['account_id'] === $accountId) {
+            if ($row['accountId'] === $accountId) {
                 $result[] = $this->transactionFactory->createTransaction(
-                    $row['account_id'],
+                    $row['accountId'],
                     $row['amount'],
                     $row['operation'],
                     $row['comment'],
-                    strtotime($row['due_date'])
+                    strtotime($row['dueDate'])
                 );
 
-                $sorting[] = $row[$sortBy] ?? null;
+                if (empty($row[$sortBy])) {
+                    throw new TransactionFieldIsNotFound("Field $sortBy is not found in row");
+                }
+
+                if (is_numeric($row[$sortBy])) {
+                    $sortType = SORT_NUMERIC;
+                } else {
+                    $sortType = SORT_STRING;
+                }
+
+                $sorting[] = $row[$sortBy];
             }
         }
 
-        array_multisort($sorting, $result);
+        array_multisort($sorting, $sortOrder, $sortType, $result);
 
         return $result;
     }
@@ -59,11 +71,11 @@ class TransactionRepository
 
         foreach ($rows as $row) {
             $result[] = $this->transactionFactory->createTransaction(
-                $row['account_id'],
+                $row['accountId'],
                 $row['amount'],
                 $row['operation'],
                 $row['comment'],
-                strtotime($row['due_date'])
+                strtotime($row['dueDate'])
             );
         }
 
@@ -77,9 +89,9 @@ class TransactionRepository
     {
         $this->storage->insertRow(
             [
-                'due_date' => $transaction->getDueDate()->format('Y-m-d H:i:s'),
+                'dueDate' => $transaction->getDueDate()->format('Y-m-d H:i:s'),
                 'operation' => $transaction->getOperation(),
-                'account_id' => $transaction->getAccountId(),
+                'accountId' => $transaction->getAccountId(),
                 'comment' => $transaction->getComment(),
                 'amount' => $transaction->getAmount()
             ]

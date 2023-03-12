@@ -3,17 +3,23 @@
 namespace Vinecave\B2BTask\Handler;
 
 use League\Csv\Exception;
+use Vinecave\B2BTask\Exception\NoTransactionsForAccountFound;
+use Vinecave\B2BTask\Exception\TransactionFieldIsNotFound;
 use Vinecave\B2BTask\Repository\TransactionRepository;
 
 class GetTransactionsHandler implements HandlerInterface
 {
+    private const ASC = 'ASC';
+    private const DESC = 'DESC';
+
     public function __construct(
         private readonly TransactionRepository $transactionRepository
     ) {
     }
 
     /**
-     * @throws Exception
+     * @throws NoTransactionsForAccountFound
+     * @throws TransactionFieldIsNotFound
      */
     public function handle(array $arguments): array
     {
@@ -21,7 +27,18 @@ class GetTransactionsHandler implements HandlerInterface
         $sortBy = $arguments[3];
         $sortOrder = $arguments[4];
 
-        return $this->transactionRepository->findTransactions($accountId, $sortBy, $sortOrder);
+        $sortOrderNumber = match ($sortOrder) {
+            self::DESC => SORT_DESC,
+            default => SORT_ASC
+        };
+
+        $result = $this->transactionRepository->findTransactions($accountId, $sortBy, $sortOrderNumber);
+
+        if (empty($result)) {
+            throw new NoTransactionsForAccountFound("No transactions found for $accountId");
+        }
+
+        return $result;
     }
 
     public static function getName(): string

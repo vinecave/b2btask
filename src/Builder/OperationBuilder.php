@@ -2,7 +2,10 @@
 
 namespace Vinecave\B2BTask\Builder;
 
+use Vinecave\B2BTask\Exception\OperationBuilderOptionsNotImplemented;
+use Vinecave\B2BTask\Exception\OperationNotInitialized;
 use Vinecave\B2BTask\Factory\TransactionFactory;
+use Vinecave\B2BTask\Model\Account;
 use Vinecave\B2BTask\Model\Operation;
 use Exception;
 
@@ -22,7 +25,7 @@ abstract class OperationBuilder
         return $this->transactionFactory;
     }
 
-    abstract public function begin(string $accountId, int $amount): self;
+    abstract public function begin(Account $account, int $amount): self;
 
     abstract public function initTransactions(): self;
 
@@ -32,7 +35,7 @@ abstract class OperationBuilder
     public function commit(): Operation
     {
         if ($this->operation == null) {
-            throw new Exception('Operation is not initialized');
+            throw new OperationNotInitialized("Operation is not initialized, call ".$this::class."->begin");
         }
 
         $operation = $this->operation;
@@ -44,10 +47,13 @@ abstract class OperationBuilder
 
     abstract protected function buildComment(): string;
 
+    /**
+     * @throws OperationNotInitialized
+     */
     protected function getOperation(): Operation
     {
         if ($this->operation == null) {
-            throw new Exception("Operation is not initialized, call ".$this::class."->begin");
+            throw new OperationNotInitialized("Operation is not initialized, call ".$this::class."->begin");
         }
 
         return $this->operation;
@@ -65,6 +71,6 @@ abstract class OperationBuilder
      */
     public function setOptions(array $options): self
     {
-        throw new Exception('This operation builder does not have options');
+        throw new OperationBuilderOptionsNotImplemented('This operation builder does not have options');
     }
 }

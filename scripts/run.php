@@ -1,5 +1,7 @@
 <?php
 
+require 'vendor/autoload.php';
+
 use Vinecave\B2BTask\Factory\AccountFactory;
 use Vinecave\B2BTask\Factory\OperationBuilderFactory;
 use Vinecave\B2BTask\Factory\TransactionFactory;
@@ -8,24 +10,33 @@ use Vinecave\B2BTask\Handler\GetAccountHandler;
 use Vinecave\B2BTask\Handler\GetTransactionsHandler;
 use Vinecave\B2BTask\Handler\MakeOperationHandler;
 use Vinecave\B2BTask\Repository\TransactionRepository;
+use Vinecave\B2BTask\Service\AccountService;
 use Vinecave\B2BTask\Storage\Storage;
 
-$handlerName = $argv[0];
-$storage = new Storage('/app/data/log.csv');
+$dataFile = 'data/log.csv';
+
+if (false === file_exists($dataFile)) {
+    touch($dataFile);
+}
+
+$handlerName = $argv[1];
+$storage = new Storage($dataFile);
 $transactionFactory = new TransactionFactory();
 $accountFactory = new AccountFactory();
 $operationBuilderFactory = new OperationBuilderFactory();
 $transactionRepository = new TransactionRepository($transactionFactory, $storage);
+$accountService = new AccountService($transactionRepository, $accountFactory);
 
 $handler = match ($handlerName) {
     GetTransactionsHandler::getName() => new GetTransactionsHandler($transactionRepository),
-    GetAccountHandler::getName() => new GetAccountHandler($transactionRepository, $accountFactory),
-    GetAccountsHandler::getName() => new GetAccountsHandler($transactionRepository, $accountFactory),
-    MakeOperationHandler::getName() => new MakeOperationHandler($operationBuilderFactory, $transactionRepository),
+    GetAccountHandler::getName() => new GetAccountHandler($accountService),
+    GetAccountsHandler::getName() => new GetAccountsHandler($accountService),
+    MakeOperationHandler::getName() => new MakeOperationHandler(
+        $operationBuilderFactory,
+        $accountService,
+        $transactionRepository
+    ),
 };
 
-try {
-    print_r($handler->handle($argv));
-} catch (Exception $e) {
-    print_r('Error: '.$e->getMessage());
-}
+
+print_r($handler->handle($argv));
