@@ -19,6 +19,8 @@
 
 ### Checks
 
+Using <code>PSR-2</code> and <code>PSR-12</code> coding standards ensured by Codesniffer.
+
 After installing project through <code>composer install</code>, run these commands to ensure code is checked:
 
 * <code>vendor/bin/phpstan analyze scripts/</code>
