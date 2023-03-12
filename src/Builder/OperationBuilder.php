@@ -47,7 +47,7 @@ abstract class OperationBuilder
     protected function getOperation(): Operation
     {
         if ($this->operation == null) {
-            throw new Exception("Operation is not initialized, call " .  $this::class . "->begin");
+            throw new Exception("Operation is not initialized, call ".$this::class."->begin");
         }
 
         return $this->operation;

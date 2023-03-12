@@ -1,6 +1,7 @@
 <?php
 
 namespace Vinecave\B2BTask\Handler;
+
 use League\Csv\Exception;
 use Vinecave\B2BTask\Factory\AccountFactory;
 use Vinecave\B2BTask\Model\Account;
@@ -34,6 +35,6 @@ class GetAccountHandler implements HandlerInterface
 
     public static function getName(): string
     {
-        // TODO: Implement getName() method.
+        return 'getAccount';
     }
 }

@@ -13,12 +13,11 @@ class TransactionFactory
         string $operation,
         string $comment,
         int $timestamp = null
-
     ): Transaction {
         if ($timestamp === null) {
-            $dueDate = new DateTime('@' . time());
+            $dueDate = new DateTime('@'.time());
         } else {
-            $dueDate = new DateTime('@' . $timestamp);
+            $dueDate = new DateTime('@'.$timestamp);
         }
 
         return new Transaction(

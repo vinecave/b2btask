@@ -1,6 +1,7 @@
 <?php
 
 namespace Vinecave\B2BTask\Model;
+
 use DateTime;
 
 class Transaction

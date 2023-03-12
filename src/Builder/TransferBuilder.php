@@ -82,8 +82,8 @@ class TransferBuilder extends OperationBuilder
         $operation = $this->getOperation();
 
         return "Transfer from account "
-            . "{$operation->getAccountId()}, "
-            . "into account {$operation->getTargetAccountId()}, "
-            . "amount {$operation->getAmount()}";
+            ."{$operation->getAccountId()}, "
+            ."into account {$operation->getTargetAccountId()}, "
+            ."amount {$operation->getAmount()}";
     }
 }

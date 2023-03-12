@@ -17,7 +17,7 @@ $accountFactory = new AccountFactory();
 $operationBuilderFactory = new OperationBuilderFactory();
 $transactionRepository = new TransactionRepository($transactionFactory, $storage);
 
-$handler = match($handlerName) {
+$handler = match ($handlerName) {
     GetTransactionsHandler::getName() => new GetTransactionsHandler($transactionRepository),
     GetAccountHandler::getName() => new GetAccountHandler($transactionRepository, $accountFactory),
     GetAccountsHandler::getName() => new GetAccountsHandler($transactionRepository, $accountFactory),
@@ -27,5 +27,5 @@ $handler = match($handlerName) {
 try {
     print_r($handler->handle($argv));
 } catch (Exception $e) {
-    print_r('Error: ' . $e->getMessage());
+    print_r('Error: '.$e->getMessage());
 }
