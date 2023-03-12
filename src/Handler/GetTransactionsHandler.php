@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vinecave\B2BTask\Handler;
 
 use League\Csv\Exception;
@@ -24,8 +26,8 @@ class GetTransactionsHandler implements HandlerInterface
     public function handle(array $arguments): array
     {
         $accountId = $arguments[2];
-        $sortBy = $arguments[3];
-        $sortOrder = $arguments[4];
+        $sortBy = $arguments[3] ?? 'amount';
+        $sortOrder = $arguments[4] ?? self::ASC;
 
         $sortOrderNumber = match ($sortOrder) {
             self::DESC => SORT_DESC,

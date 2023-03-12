@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vinecave\B2BTask\Builder;
 
 use Vinecave\B2BTask\Exception\OperationBuilderOptionsNotImplemented;

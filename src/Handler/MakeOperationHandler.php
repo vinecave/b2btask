@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vinecave\B2BTask\Handler;
 
 use Vinecave\B2BTask\Exception\AccountNotFound;
@@ -30,7 +32,7 @@ class MakeOperationHandler implements HandlerInterface
     {
         $operation = $arguments[2];
         $accountId = $arguments[3];
-        $amount = $arguments[4];
+        $amount = (int)$arguments[4];
         $targetAccountId = $arguments[5] ?? null;
 
         $operationBuilder = $this->operationBuilderFactory->createBuilder($operation);

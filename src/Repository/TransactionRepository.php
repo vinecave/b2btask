@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vinecave\B2BTask\Repository;
 
 use League\Csv\CannotInsertRecord;
@@ -29,13 +31,13 @@ class TransactionRepository
         $rows = $this->storage->readRows();
         $result = [];
         $sorting = [];
-        $sortType = null;
+        $sortType = SORT_NUMERIC;
 
         foreach ($rows as $row) {
             if ($row['accountId'] === $accountId) {
                 $result[] = $this->transactionFactory->createTransaction(
                     $row['accountId'],
-                    $row['amount'],
+                    (int)$row['amount'],
                     $row['operation'],
                     $row['comment'],
                     strtotime($row['dueDate'])
@@ -72,7 +74,7 @@ class TransactionRepository
         foreach ($rows as $row) {
             $result[] = $this->transactionFactory->createTransaction(
                 $row['accountId'],
-                $row['amount'],
+                (int)$row['amount'],
                 $row['operation'],
                 $row['comment'],
                 strtotime($row['dueDate'])
