@@ -47,6 +47,6 @@ class DepositBuilder extends OperationBuilder
         $operation = $this->getOperation();
 
         return "Deposit for account "
-            ."{$operation->getAccountId()}, amount {$operation->getAmount()}";
+            . "{$operation->getAccountId()}, amount {$operation->getAmount()}";
     }
 }

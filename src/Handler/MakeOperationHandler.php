@@ -32,7 +32,7 @@ class MakeOperationHandler implements HandlerInterface
     {
         $operation = $arguments[2];
         $accountId = $arguments[3];
-        $amount = (int)$arguments[4];
+        $amount = (int) $arguments[4];
         $targetAccountId = $arguments[5] ?? null;
 
         $operationBuilder = $this->operationBuilderFactory->createBuilder($operation);

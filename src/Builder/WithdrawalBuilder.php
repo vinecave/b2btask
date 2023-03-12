@@ -66,6 +66,6 @@ class WithdrawalBuilder extends OperationBuilder
         $operation = $this->getOperation();
 
         return "Withdrawal from account "
-            ."{$operation->getAccountId()}, amount {$operation->getAmount()}";
+            . "{$operation->getAccountId()}, amount {$operation->getAmount()}";
     }
 }

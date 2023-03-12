@@ -37,7 +37,7 @@ class TransactionRepository
             if ($row['accountId'] === $accountId) {
                 $result[] = $this->transactionFactory->createTransaction(
                     $row['accountId'],
-                    (int)$row['amount'],
+                    (int) $row['amount'],
                     $row['operation'],
                     $row['comment'],
                     strtotime($row['dueDate'])
@@ -74,7 +74,7 @@ class TransactionRepository
         foreach ($rows as $row) {
             $result[] = $this->transactionFactory->createTransaction(
                 $row['accountId'],
-                (int)$row['amount'],
+                (int) $row['amount'],
                 $row['operation'],
                 $row['comment'],
                 strtotime($row['dueDate'])

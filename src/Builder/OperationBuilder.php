@@ -37,7 +37,7 @@ abstract class OperationBuilder
     public function commit(): Operation
     {
         if ($this->operation == null) {
-            throw new OperationNotInitialized("Operation is not initialized, call ".$this::class."->begin");
+            throw new OperationNotInitialized("Operation is not initialized, call " . $this::class . "->begin");
         }
 
         $operation = $this->operation;
@@ -55,7 +55,7 @@ abstract class OperationBuilder
     protected function getOperation(): Operation
     {
         if ($this->operation == null) {
-            throw new OperationNotInitialized("Operation is not initialized, call ".$this::class."->begin");
+            throw new OperationNotInitialized("Operation is not initialized, call " . $this::class . "->begin");
         }
 
         return $this->operation;
