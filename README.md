@@ -19,7 +19,7 @@
 
 ### Checks
 
-Using <code>PSR-2</code> and <code>PSR-12</code> coding standards ensured by Codesniffer.
+Using <code>PSR-1</code> and <code>PSR-12</code> coding standards ensured by Codesniffer.
 
 After installing project through <code>composer install</code>, run these commands to ensure code is checked:
 
@@ -100,7 +100,7 @@ Each <code>HandlerInterface</code> implementor and each <code>OperationBuilder</
 
 <code>Strategy</code> is used to implement and choose the right <code>HandlerInterface</code>
 
-<code>Builder</code> was chosen to implement <code>Operation</code> creation as it gives more flexibility as opposed to <code>Factor</code> pattern.
+<code>Builder</code> was chosen to implement <code>Operation</code> creation as it gives more flexibility as opposed to <code>Factory</code> pattern.
 
 ---
 
